@@ -4,8 +4,6 @@ Centralized application configuration, loaded from environment variables.
 Belongs to: backend/app/
 """
 from functools import lru_cache
-
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
