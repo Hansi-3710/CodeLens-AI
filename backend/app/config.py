@@ -38,16 +38,7 @@ class Settings(BaseSettings):
     # a plain comma-separated string ('https://a.com,https://b.com').
     ALLOWED_ORIGINS: str = "http://localhost:5173"
 
-    @field_validator("ALLOWED_ORIGINS", mode="before")
-    @classmethod
-    def _split_comma_separated(cls, value):
-        if isinstance(value, str):
-            stripped = value.strip()
-            if stripped.startswith("["):
-                import json
-                return json.loads(stripped)
-            return [origin.strip() for origin in stripped.split(",") if origin.strip()]
-        return value
+    
 
     def validate_for_production(self) -> None:
         """Called once at startup (see main.py). Fails loudly rather than
@@ -65,7 +56,7 @@ class Settings(BaseSettings):
             )
         if "localhost" in self.DATABASE_URL or "db:5432" in self.DATABASE_URL:
             problems.append("DATABASE_URL still points at a local/dev database.")
-        if self.ALLOWED_ORIGINS == ["http://localhost:5173"]:
+        if self.ALLOWED_ORIGINS == "http://localhost:5173":
             problems.append(
                 "ALLOWED_ORIGINS is still the localhost default — set it to your real "
                 "deployed frontend URL (e.g. https://your-app.vercel.app) or CORS will "
