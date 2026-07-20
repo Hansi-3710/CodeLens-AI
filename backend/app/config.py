@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     # CORS — accepts either a JSON array ('["https://a.com","https://b.com"]')
     # or, more realistically for pasting into a Render/Vercel env var field,
     # a plain comma-separated string ('https://a.com,https://b.com').
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173"]
+    ALLOWED_ORIGINS: str = "http://localhost:5173"
 
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
