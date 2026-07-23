@@ -69,4 +69,13 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    settings = Settings()
+
+    if settings.DATABASE_URL.startswith("postgresql://"):
+        settings.DATABASE_URL = settings.DATABASE_URL.replace(
+            "postgresql://",
+            "postgresql+psycopg://",
+            1,
+        )
+
+    return settings
