@@ -20,6 +20,9 @@ config = context.config
 # Override sqlalchemy.url from our app settings (env-driven) instead of
 # hardcoding it in alembic.ini, so dev/CI/prod all migrate correctly.
 config.set_main_option("sqlalchemy.url", get_settings().DATABASE_URL)
+print("=" * 80)
+print("ALEMBIC DATABASE_URL =", get_settings().DATABASE_URL)
+print("=" * 80)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
