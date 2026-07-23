@@ -14,6 +14,16 @@ from app.config import get_settings
 
 settings = get_settings()
 
+print("=" * 80)
+print("DATABASE_URL =", settings.DATABASE_URL)
+print("=" * 80)
+
+_engine_kwargs = {"pool_pre_ping": True}
+if settings.DATABASE_URL.startswith("postgresql"):
+    _engine_kwargs.update(pool_size=5, max_overflow=10, pool_recycle=1800)
+
+engine = create_engine(settings.DATABASE_URL, **_engine_kwargs)
+
 # pool_pre_ping avoids handing out dead connections after a DB restart/idle
 # timeout. pool_size/max_overflow are conservative defaults for a single
 # backend instance; tune upward alongside DB max_connections in Phase 9.
