@@ -71,6 +71,9 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     settings = Settings()
 
+    # Supabase provides postgresql:// URLs.
+    # SQLAlchemy defaults those to psycopg2.
+    # Convert to psycopg3.
     if settings.DATABASE_URL.startswith("postgresql://"):
         settings.DATABASE_URL = settings.DATABASE_URL.replace(
             "postgresql://",
