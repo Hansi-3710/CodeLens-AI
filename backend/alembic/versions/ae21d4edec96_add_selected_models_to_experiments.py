@@ -36,7 +36,11 @@ def upgrade() -> None:
     # Drop the server_default after backfilling existing rows — new rows
     # always supply a value explicitly (see database/models.py), so the
     # default was only needed to satisfy NOT NULL on already-existing rows.
-    op.alter_column('experiments', 'selected_models', server_default=None)
+    # Postgres-only: SQLite's ALTER TABLE can't alter a column's default at
+    # all, and leaving the default in place there is harmless (it's never
+    # relied upon since every INSERT already supplies the column).
+    if op.get_bind().dialect.name != 'sqlite':
+        op.alter_column('experiments', 'selected_models', server_default=None)
 
 
 def downgrade() -> None:
