@@ -20,9 +20,6 @@ config = context.config
 # Override sqlalchemy.url from our app settings (env-driven) instead of
 # hardcoding it in alembic.ini, so dev/CI/prod all migrate correctly.
 config.set_main_option("sqlalchemy.url", get_settings().DATABASE_URL)
-print("=" * 80)
-print("ALEMBIC DATABASE_URL =", get_settings().DATABASE_URL)
-print("=" * 80)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -72,10 +69,11 @@ def run_migrations_online() -> None:
     """
     from sqlalchemy import create_engine
 
-    connectable = create_engine(
-        get_settings().DATABASE_URL,
-        poolclass=pool.NullPool,
-)
+    engine_kwargs = {"poolclass": pool.NullPool}
+    if get_settings().DATABASE_URL.startswith("postgresql"):
+        engine_kwargs["connect_args"] = {"connect_timeout": 10}
+
+    connectable = create_engine(get_settings().DATABASE_URL, **engine_kwargs)
 
     with connectable.connect() as connection:
         context.configure(
