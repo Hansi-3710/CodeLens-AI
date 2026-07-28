@@ -4,9 +4,10 @@ Centralized application configuration, loaded from environment variables.
 Belongs to: backend/app/
 """
 from functools import lru_cache
+from typing import Annotated
 
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -36,7 +37,7 @@ class Settings(BaseSettings):
     # CORS — accepts either a JSON array ('["https://a.com","https://b.com"]')
     # or, more realistically for pasting into a Render/Vercel env var field,
     # a plain comma-separated string ('https://a.com,https://b.com').
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173"]
+    ALLOWED_ORIGINS: Annotated[list[str], NoDecode] = ["http://localhost:5173"]
 
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
